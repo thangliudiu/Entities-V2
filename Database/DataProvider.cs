@@ -173,7 +173,7 @@ namespace Database
                 _connection.Query("SELECT name FROM sqlite_master limit 1");
                 return _connection;
             }
-            catch { return null; }
+            catch(Exception ex) { return null; }
            
         }
 
