@@ -59,10 +59,11 @@ namespace Entities
             autoCompleteSQLScript.SearchPattern = "\\w"; //"[\\w\\.]";
             autoCompleteSQLScript.AllowsTabKey = true;
 
-
             var fontFarmily = new FontFamily("Consolas");
 
-            rText_Conn.Text = FileHandle.GetTextFile(Constants.PathFile.Conn);
+            var folder = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+
+            rText_Conn.Text = FileHandle.GetTextFile(Path.Combine(folder,Constants.PathFile.Conn));
             rText_Conn.Font = new Font(fontFarmily, 10);
             rtb_Result2.Font = new Font(fontFarmily, 8);
             rText_Result.Font = new Font(fontFarmily, 8);
@@ -71,8 +72,6 @@ namespace Entities
             rtb_ResultScript.Font = new Font(fontFarmily, 13);
             rtb_SuggestScript.Font = new Font(fontFarmily, 10.3f);
             rText_Result.BackColor = Color.FromArgb(30, 30, 30);
-
-
 
             foreach (string suggestType in SuggestTypes)
             {
@@ -168,8 +167,8 @@ namespace Entities
 
         private void Btn_Connect_Click(object sender, EventArgs e)
         {
-            FileHandle.WriteFile(Constants.PathFile.Conn, Conn);
-
+            var folder = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            FileHandle.WriteFile(Path.Combine(folder,Constants.PathFile.Conn), Conn);
             bool flag1 = InitForm();
             if (flag1) MessageBox.Show(string.Format("Get TableName Complete! It's a {0}", Database.DataProvider.Instance.ProviderName));
         }
@@ -723,8 +722,6 @@ namespace Entities
             rtb_SQLExecute.Text = query + downline + Clipboard.GetText();
         }
 
-
-
         private void dgv_SQLExecuteResult_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             object value = e.Value;
@@ -742,6 +739,9 @@ namespace Entities
         private void btn_ConvertTextCSharp_Click(object sender, EventArgs e)
         {
             string text = rtb_ConvertText.Text;
+
+            if (string.IsNullOrEmpty(text)) return;
+
             text = text.Replace("\\", "\\\\");
             text = text.Replace("\"", "\\\"");
             if (cb_IsKeepDown.Checked == false) { text = text.Replace("\n", " "); text = text.Replace("\r", " "); }
@@ -756,12 +756,6 @@ namespace Entities
         }
         #endregion
 
-        #region Function
-
-
-
-        #endregion
-
         private void rtb_SQLScript_KeyDown(object sender, KeyEventArgs e)
         {
             if (suggestControllerSQLScript == null) suggestControllerSQLScript = new SuggestController(WapperData, autoCompleteSQLScript, sender as RichTextBox);
@@ -770,27 +764,11 @@ namespace Entities
 
         }
 
-
         private void rtb_SQLExecute_KeyDown(object sender, KeyEventArgs e)
         {
             if (suggestControllerSQLExecute == null) suggestControllerSQLExecute = new SuggestController(WapperData, autoCompleteSQLScript, sender as RichTextBox);
 
             suggestControllerSQLExecute.Suggest(e.KeyValue);
         }
-
-
     }
-
-
-
-
-
-
-
-
-
 }
-
-
-
-
